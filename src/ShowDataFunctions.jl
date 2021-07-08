@@ -30,7 +30,7 @@ end
 #----------------------------------------------------------------------------------------#
 
 """
-show_historical_data(pair::String, interval::Int64)
+    show_historical_data(pair::String, interval::Int64)
 
 Fetch historic rates for a product.
 

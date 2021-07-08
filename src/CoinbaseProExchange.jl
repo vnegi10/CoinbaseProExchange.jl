@@ -13,7 +13,6 @@ const GRANULARITY = [60, 300, 900, 3600, 21600, 86400]
 const ENDPOINTS = ["24hr stats", "product info", "product ticker", 
                    "order book 1", "order book 2", "order book 3"]
 
-
 mutable struct CoinbaseProAuth
     end_point::String
     api_key::String
@@ -30,9 +29,6 @@ mutable struct UserInfo
 end
 
 IntOrFloat = Union{Int64, Float64}
-
-
-
 
 include("GetDataFunctions.jl")
 include("ShowDataFunctions.jl")
