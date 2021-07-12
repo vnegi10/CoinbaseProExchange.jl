@@ -6,7 +6,7 @@
 Get the API server time.
 
 # Arguments
-- `time_type::String` : "iso" or "epoch" (represents decimal seconds since Unix epoch)
+- `time_type::String` : "iso" (default) or "epoch" (represents decimal seconds since Unix epoch)
 
 # Example
 ```julia-repl
@@ -14,7 +14,7 @@ julia> show_server_time("iso")
 "2021-07-06T22:09:17.231Z"
 ```
 """
-function show_server_time(time_type::String)
+function show_server_time(time_type::String="iso")
 
     server_time = Dict()
     
@@ -37,7 +37,7 @@ Fetch historic rates for a product.
 # Arguments
 - `pair::String` : Specify currency pair, for example "ETH-EUR" 
 - `interval::Int64` : Rates are returned in grouped buckets based on specified interval. 
-                      Choose one from [60, 300, 900, 3600, 21600, 86400], all in seconds.
+                      Choose one from [60, 300 (default), 900, 3600, 21600, 86400], all in seconds.
 
 # Example
 ```julia-repl
@@ -54,7 +54,7 @@ julia> show_historical_data("ETH-EUR", 3600)
    6 │ 2021-06-24T16:00:00  1657.07  1694.52  1665.94  1693.9   659.553
 ```
 """
-function show_historical_data(pair::String, interval::Int64)
+function show_historical_data(pair::String, interval::Int64=300)
 
     df_candles = DataFrame()
     
@@ -81,7 +81,7 @@ end
 Fetch list of all available products for a given currency.
 
 # Arguments
-- `currency::String` : "EUR" or "USD"
+- `currency::String` : "EUR", "USD" (default), "GBP" etc.
 
 # Example
 ```julia-repl
@@ -97,7 +97,7 @@ julia> show_all_products("EUR")
  "UMA-EUR"
 ```
 """
-function show_all_products(currency::String)
+function show_all_products(currency::String="USD")
     products = String[]
     try
         products = get_all_products(currency)
@@ -167,7 +167,7 @@ Fetch product data based on the selected endpoint.
 
 # Arguments
 - `pair::String` : Specify currency pair, for example "ETH-EUR" 
-- `endpoint::String` : Select one from ["24hr stats", "product info", "product ticker", 
+- `endpoint::String` : Select one from ["24hr stats" (default), "product info", "product ticker", 
                                         "order book 1", "order book 2", "order book 3"]
 
 # Example
@@ -180,7 +180,7 @@ julia> show_product_data("BTC-EUR", "24hr stats")
    1 │ 29620.29  28740.89  28362.27  28642.14  1058.30490447  57346.67861744
 ```
 """
-function show_product_data(pair::String, endpoint::String)
+function show_product_data(pair::String, endpoint::String="24hr stats")
 
     df_product = DataFrame() 
 
@@ -373,6 +373,47 @@ function show_single_order(order_ID::String, user_data::UserInfo)
 
     return df_orders
 end
+
+"""
+    show_exchange_limits(user_data::UserInfo, currency::String)
+
+Fetch information on the payment method transfer limit for a given currency.
+
+# Arguments
+- `user_data::UserInfo` : API data
+- `currency::String` : "ETH, "BTC", "XTZ" etc.
+
+# Example
+```julia-repl
+julia> show_exchange_limits(user_data, "ETH")
+5×4 DataFrame
+ Row │ payment_method     max         period_in_days  remaining  
+     │ String             Float64     Int64           Float64    
+─────┼───────────────────────────────────────────────────────────
+   1 │ ideal_deposit       14.6423                 1   14.6423
+   2 │ exchange_withdraw  146.423                  1  146.423
+   3 │ secure3d_buy         1.75707                7    1.75707
+   4 │ credit_debit_card    0.585691               7    0.585691
+   5 │ paypal_withdrawal   11.7138                 1   11.7138
+```
+"""
+function show_exchange_limits(user_data::UserInfo, currency::String)
+    auth_data = CoinbaseProAuth("/users/self/exchange-limits", user_data.api_key, user_data.secret_key, user_data.passphrase, "GET", "")
+
+    df_limits = DataFrame()
+    try
+        df_limits = get_exchange_limits(auth_data, currency)
+    catch e
+        if isa(e, HTTP.ExceptionRequest.StatusError)
+            @info "404 Not Found - Check if the input data is valid"
+        else
+            @info "Could not retrieve data, try again!"
+        end
+    end
+
+    return df_limits
+end
+
 
 
 

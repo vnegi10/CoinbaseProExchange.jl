@@ -109,19 +109,29 @@ function get_product_data(pair::String, endpoint::String)
     return DataFrame(product_dict)
 end
 
-########## Functions to access private endpoints, requires authentication using Coinbase Pro API key ##########
+##################### Helper function #####################
 
-function get_all_accounts(auth_data::CoinbaseProAuth, currencies::Vector{String})
-	
-	url = URL * auth_data.end_point
+function get_data_dict(auth_data::CoinbaseProAuth)
+
+    url = URL * auth_data.end_point
 	
 	headers = generate_auth_headers(auth_data)
 	body = auth_data.body
 	
-	# Use GET request to fetch list of all trading accounts
-	account_response = HTTP.request(auth_data.method, url, headers, body; verbose = 0, retries = 2)
-	account_text = String(account_response.body)
-	account_dict = JSON.parse(account_text)
+	# Make HTTP request
+	data_response = HTTP.request(auth_data.method, url, headers, body; verbose = 0, retries = 2)
+	data_text = String(data_response.body)
+	data_dict = JSON.parse(data_text)
+
+    return data_dict
+end
+
+
+########## Functions to access private endpoints, requires authentication using Coinbase Pro API key ##########
+
+function get_all_accounts(auth_data::CoinbaseProAuth, currencies::Vector{String})
+	
+	account_dict = get_data_dict(auth_data::CoinbaseProAuth)
 	
 	df_account = DataFrame(currency = String[], balance = Float64[], profile_id = String[], trading_enabled = Bool[], id = String[], hold = Float64[], available = Float64[])
 	
@@ -142,15 +152,7 @@ function get_account_info(auth_data::CoinbaseProAuth, info_type::String)
 
     @assert info_type in ["info", "history", "holds"]
 
-    url = URL * auth_data.end_point
-	
-	headers = generate_auth_headers(auth_data)
-	body = auth_data.body
-	
-	# Use GET request to fetch information for a single account
-	account_response = HTTP.request(auth_data.method, url, headers, body; verbose = 0, retries = 2)
-	account_text = String(account_response.body)
-	account_dict = JSON.parse(account_text)
+    account_dict = get_data_dict(auth_data::CoinbaseProAuth)
 
     if info_type == "info"
         return DataFrame(account_dict)
@@ -171,15 +173,8 @@ function get_account_info(auth_data::CoinbaseProAuth, info_type::String)
 end
 
 function get_open_orders(auth_data::CoinbaseProAuth)
-    url = URL * auth_data.end_point
-	
-	headers = generate_auth_headers(auth_data)
-	body = auth_data.body
-	
-	# Use GET request to fetch information for a single account
-	account_response = HTTP.request(auth_data.method, url, headers, body; verbose = 0, retries = 2)
-	account_text = String(account_response.body)
-	account_dict = JSON.parse(account_text)
+    
+	account_dict = get_data_dict(auth_data::CoinbaseProAuth)
     
     if auth_data.end_point == "/orders"
         return vcat(DataFrame.(account_dict)...)
@@ -187,6 +182,22 @@ function get_open_orders(auth_data::CoinbaseProAuth)
         return DataFrame(account_dict)
     end
 end
+
+function get_exchange_limits(auth_data::CoinbaseProAuth, currency::String)
+    
+	account_dict = get_data_dict(auth_data::CoinbaseProAuth)
+
+    df_limits = DataFrame(payment_method = String[], max = Float64[], period_in_days = Int64[], remaining = Float64[])
+
+    for key in keys(account_dict["transfer_limits"])
+        currency_dict = account_dict["transfer_limits"][key][currency]
+        push!(df_limits, [ key parse(Float64, currency_dict["max"]) currency_dict["period_in_days"] parse(Float64, currency_dict["remaining"]) ])
+    end
+
+    return df_limits
+end
+
+
 
 
 

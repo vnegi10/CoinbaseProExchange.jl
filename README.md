@@ -10,19 +10,6 @@ This package provides an unofficial Julia wrapper for the Coinbase Pro REST API.
 
 ## How to install?
 
-There are multiple ways to make use of this package.
-
-### Method 1
-Clone this repo to your local system. Open Julia REPL and cd to the repo directory. Now activate + instantiate the project environment by doing the following:
-* Press ']' to enter Pkg prompt
-* Type **activate .**
-* Type **instantiate**
-
-### Method 2
-* Press ']' to enter Pkg prompt
-* add("")
-
-### Method 3 (This will work only once the package is registered in the Julia resgistry)
 * Press ']' to enter Pkg prompt
 * add CoinbaseProExchange
 
@@ -48,8 +35,7 @@ Examples of available functions along with expected output are shown below. Deta
 
 ### Available functions
 
-show_historical_data, show_server_time, show_all_products, show_latest_trades, show_product_data, show_all_accounts,
-show_account_info, place_market_order, place_limit_order, show_open_orders, show_single_order, cancel_order, cancel_all_orders
+show_historical_data, show_server_time, show_all_products, show_latest_trades, show_product_data, show_all_accounts, show_account_info, place_market_order, place_limit_order, show_open_orders, show_single_order, show_exchange_limits, cancel_order, cancel_all_orders
 
 ### Public endpoints (Coinbase account is not necessary)
 
@@ -221,6 +207,23 @@ julia> cancel_all_orders(user_data)
 1-element Vector{Any}:
  "35fa8e19-f204-40c0-b995-eb2e4e168e01"
 ```
+
+```julia
+julia> show_exchange_limits(user_data, "ETH")
+
+5×4 DataFrame
+ Row │ payment_method     max         period_in_days  remaining  
+     │ String             Float64     Int64           Float64    
+─────┼───────────────────────────────────────────────────────────
+   1 │ ideal_deposit       14.6423                 1   14.6423
+   2 │ exchange_withdraw  146.423                  1  146.423
+   3 │ secure3d_buy         1.75707                7    1.75707
+   4 │ credit_debit_card    0.585691               7    0.585691
+   5 │ paypal_withdrawal   11.7138                 1   11.7138
+```
+
+
+
 
 
 
