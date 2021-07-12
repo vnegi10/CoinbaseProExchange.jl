@@ -25,9 +25,10 @@ df_order_book2 = show_product_data("BTC-EUR", "order book 2")
 end
 
 
-# Test cases for accessing private data
+#= Test cases for accessing private data, which needs user API information. Hence, this set 
+   is run only locally. =#
 
-@testset "Check if private data is accessible" begin
+#= @testset "Check if private data is accessible" begin
 
 input_params = JSON.parsefile("/home/vikas/Documents/Input_JSON/VNEG_user_data.json")
 user_data = UserInfo(input_params["api_key"], input_params["api_secret"], input_params["api_passphrase"])
@@ -41,7 +42,7 @@ df_account_info = show_account_info(user_data, "ETH", "info")
 df_account_history = show_account_info(user_data, "ETH", "history")
 @test isa(df_account_history, DataFrame)
 
-end
+end =#
 
 
 

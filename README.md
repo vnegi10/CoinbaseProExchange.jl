@@ -2,11 +2,7 @@
 
 [![Build status (Github Actions)](https://github.com/vnegi10/CoinbaseProExchange.jl/workflows/CI/badge.svg)](https://github.com/vnegi10/CoinbaseProExchange.jl/actions)
 
-[![codecov.io](http://codecov.io/github/vnegi10/CoinbaseProExchange.jl/coverage.svg?branch=main)](http://codecov.io/github/vnegi10/CoinbaseProExchange.jl?branch=main)
-
 [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://vnegi10.github.io/CoinbaseProExchange.jl/stable)
-
-[![](https://img.shields.io/badge/docs-dev-blue.svg)](https://vnegi10.github.io/CoinbaseProExchange.jl/dev)
 
 This package provides an unofficial Julia wrapper for the Coinbase Pro REST API. I am in no way affiliated with Coinbase, so use it at your own risk.
 
