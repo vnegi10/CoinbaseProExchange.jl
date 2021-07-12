@@ -45,6 +45,9 @@ df_account_history = show_account_info(user_data, "ETH", "history")
 df_limits = show_exchange_limits(user_data, "ETH")
 @test isa(df_limits, DataFrame)
 
+df_fills = show_fills(user_data, "ETH-EUR")
+@test isa(df_fills, DataFrame)
+
 end =#
 
 

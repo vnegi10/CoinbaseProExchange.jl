@@ -35,7 +35,7 @@ Examples of available functions along with expected output are shown below. Deta
 
 ### Available functions
 
-show_historical_data, show_server_time, show_all_products, show_latest_trades, show_product_data, show_all_accounts, show_account_info, place_market_order, place_limit_order, show_open_orders, show_single_order, show_exchange_limits, cancel_order, cancel_all_orders
+show_historical_data, show_server_time, show_all_products, show_latest_trades, show_product_data, show_all_accounts, show_account_info, place_market_order, place_limit_order, show_open_orders, show_single_order, show_exchange_limits, show_fills, cancel_order, cancel_all_orders
 
 ### Public endpoints (Coinbase account is not necessary)
 
@@ -221,6 +221,20 @@ julia> show_exchange_limits(user_data, "ETH")
    4 │ credit_debit_card    0.585691               7    0.585691
    5 │ paypal_withdrawal   11.7138                 1   11.7138
 ```
+
+```julia
+julia> show_fills(user_data, "ETH-EUR")
+
+7×13 DataFrame
+ Row │ created_at                fee                 liquidity  order_id                           price   ⋯
+     │ String                    String              String     String                             String  ⋯
+─────┼──────────────────────────────────────────────────────────────────────────────────────────────────────
+   1 │ 2021-07-04T21:54:09.902Z  0.0746268391200000  T          d275ae2b-4f34-4ce9-98a7-1147bccf…  2003.90 ⋯
+   2 │ 2021-07-04T15:43:54.115Z  0.0733968750000000  T          7a019bf8-bee8-4001-bb34-e3d6f3e6…  1957.25
+   3 │ 2021-07-04T15:42:35.808Z  0.0597014279730000  T          2a8814f1-76d3-4fa2-bb0a-6f25e050…  1956.42
+   4 │ 2021-07-04T15:28:06.005Z  0.0599999776075000  T          9971744a-d308-4481-950d-e2ada197…  1953.35
+```
+
 
 
 

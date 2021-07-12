@@ -33,6 +33,8 @@ cancel_order(order_id::String, user_data::UserInfo)
 cancel_all_orders(user_data::UserInfo)
 
 show_exchange_limits(user_data::UserInfo, currency::String)
+
+show_fills(user_data::UserInfo, pair::String)
 ```
 
 

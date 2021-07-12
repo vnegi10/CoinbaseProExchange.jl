@@ -197,6 +197,14 @@ function get_exchange_limits(auth_data::CoinbaseProAuth, currency::String)
     return df_limits
 end
 
+function get_fills(auth_data::CoinbaseProAuth)
+
+    account_dict = get_data_dict(auth_data::CoinbaseProAuth)
+    
+    return vcat(DataFrame.(account_dict)...)
+end
+
+
 
 
 

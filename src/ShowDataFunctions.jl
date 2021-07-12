@@ -414,6 +414,47 @@ function show_exchange_limits(user_data::UserInfo, currency::String)
     return df_limits
 end
 
+"""
+    show_fills(user_data::UserInfo, pair::String)
+
+Get a list of recent fills of the API key's profile for a given pair.
+
+# Arguments
+- `user_data::UserInfo` : API data
+- `pair::String` : "ETH-EUR" etc.
+
+# Example
+```julia-repl
+julia> show_fills(user_data, "ETH-EUR")
+7×13 DataFrame
+ Row │ created_at                fee                 liquidity  order_id                           price   ⋯
+     │ String                    String              String     String                             String  ⋯
+─────┼──────────────────────────────────────────────────────────────────────────────────────────────────────
+   1 │ 2021-07-04T21:54:09.902Z  0.0746268391200000  T          d275ae2b-4f34-4ce9-98a7-1147bccf…  2003.90 ⋯
+   2 │ 2021-07-04T15:43:54.115Z  0.0733968750000000  T          7a019bf8-bee8-4001-bb34-e3d6f3e6…  1957.25
+   3 │ 2021-07-04T15:42:35.808Z  0.0597014279730000  T          2a8814f1-76d3-4fa2-bb0a-6f25e050…  1956.42
+   4 │ 2021-07-04T15:28:06.005Z  0.0599999776075000  T          9971744a-d308-4481-950d-e2ada197…  1953.35
+```
+"""
+function show_fills(user_data::UserInfo, pair::String)
+    auth_data = CoinbaseProAuth("/fills?product_id=$(pair)", user_data.api_key, user_data.secret_key, user_data.passphrase, "GET", "")
+
+    df_fills = DataFrame()
+    try
+        df_fills = get_fills(auth_data)
+    catch e
+        if isa(e, HTTP.ExceptionRequest.StatusError)
+            @info "404 Not Found - Check if the input data is valid"
+        else
+            @info "Could not retrieve data, try again!"
+        end
+    end
+
+    return df_fills
+end
+
+
+
 
 
 
