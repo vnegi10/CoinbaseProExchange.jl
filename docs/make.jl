@@ -11,6 +11,6 @@ makedocs(
 # See "Hosting Documentation" and deploydocs() in the Documenter manual
 # for more information.
 deploydocs(
-    repo = "https://github.com/vnegi10/CoinbaseProExchange.jl.git",
+    repo = "github.com/vnegi10/CoinbaseProExchange.jl.git",
     devbranch = "main"
 )
