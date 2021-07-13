@@ -4,7 +4,9 @@
 
 This package provides an unofficial Julia wrapper for the Coinbase Pro REST API. I am in no way affiliated with Coinbase, so use it at your own risk.
 
-**Disclaimer: This package is intended to be used as a tool for automated trading, and fetching historical price information from Coinbase Pro. You are free to use it as you wish. However, remember that cryptocurrency markets are highly volatile and you are likely to lose your investment. Please understand the risks and do your own research before you decide to trade in any of the available cryptocurrencies.**
+**Disclaimer: This package is intended to be used ONLY for hobby projects related to automated trading, building bots and fetching historical data from Coinbase Pro. As with any piece of code, there is a possibility of undiscovered bugs. It goes without saying that you should avoid making large investments with this tool. There are professional platforms/services available for doing that.**
+
+**Remember that cryptocurrency markets are highly volatile and you are likely to lose your investment. Please understand the risks and do your own research before you decide to trade in any of the available cryptocurrencies.**
 
 ## How to install?
 
@@ -67,6 +69,8 @@ Obtain your API key, API secret and passphrase from your Coinbase Pro account. C
 ```julia
 julia> user_data = UserInfo("YOUR_API_KEY", "YOUR_SECRET", "YOUR_PASSPHRASE")
 ```
+
+**Use with caution! Market orders are almost always filled immediately.**
 
 ```julia
 julia> place_market_order("buy", "ETH-EUR", 15, "quote", user_data)
