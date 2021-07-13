@@ -4,9 +4,9 @@
 
 This package provides an unofficial Julia wrapper for the Coinbase Pro REST API. I am in no way affiliated with Coinbase, so use it at your own risk.
 
-**Disclaimer: This package is intended to be used ONLY for hobby projects related to automated trading, building bots and fetching historical data from Coinbase Pro. As with any piece of code, there is a possibility of undiscovered bugs. It goes without saying that you should avoid making large investments with this tool. There are professional platforms/services available for doing that.**
+**Disclaimer: This package is intended to be used ONLY for personal hobby projects which might involve automated trading, building bots or fetching historical data from Coinbase Pro. As with any piece of code, there is a possibility of undiscovered bugs. It goes without saying that you should avoid making large investments using this code. There are professional platforms/services available for doing that.**
 
-**Remember that cryptocurrency markets are highly volatile and you are likely to lose your investment. Please understand the risks and do your own research before you decide to trade in any of the available cryptocurrencies.**
+**Remember that cryptocurrency markets are highly volatile and you are likely to lose your investment. Please understand the risks, and do your own research, before you decide to trade in any of the available cryptocurrencies.**
 
 ## How to install?
 
