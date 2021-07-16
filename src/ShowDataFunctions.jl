@@ -374,6 +374,8 @@ function show_single_order(order_ID::String, user_data::UserInfo)
     return df_orders
 end
 
+#----------------------------------------------------------------------------------------#
+
 """
     show_exchange_limits(user_data::UserInfo, currency::String)
 
@@ -414,6 +416,8 @@ function show_exchange_limits(user_data::UserInfo, currency::String)
     return df_limits
 end
 
+#----------------------------------------------------------------------------------------#
+
 """
     show_fills(user_data::UserInfo, pair::String)
 
@@ -437,21 +441,126 @@ julia> show_fills(user_data, "ETH-EUR")
 ```
 """
 function show_fills(user_data::UserInfo, pair::String)
-    auth_data = CoinbaseProAuth("/fills?product_id=$(pair)", user_data.api_key, user_data.secret_key, user_data.passphrase, "GET", "")
+        
+    return do_try_catch("/fills?product_id=$(pair)", user_data, get_common_df)
+end
 
-    df_fills = DataFrame()
+#----------------------------------------------------------------------------------------#
+
+"""
+    show_transfers(user_data::UserInfo, deposit_type::String="deposit")
+
+Get a list of deposits/withdrawals from the profile of the API key, in descending order by created time.
+
+# Arguments
+- `user_data::UserInfo` : API data
+- `deposit_type::String` : "deposit" (default), "internal_deposit" (transfer between portfolios), "withdraw" or "internal_withdraw"
+
+# Example
+```julia-repl
+julia> show_transfers(user_data, "internal_deposit")
+4×7 DataFrame
+ Row │ account_id                         amount                created_at                     curren ⋯
+     │ String                             String                String                         String ⋯
+─────┼─────────────────────────────────────────────────────────────────────────────────────────────────
+   1 │ 6defb94d-80e3-45b4-a6bf-0420cc5f…  10.0000000000000000   2021-07-16 11:10:10.253255+00  EUR    ⋯
+   2 │ 6defb94d-80e3-45b4-a6bf-0420cc5f…  10.0000000000000000   2021-07-16 11:07:48.003446+00  EUR
+```
+"""
+function show_transfers(user_data::UserInfo, transfer_type::String="deposit")
+    
+    return do_try_catch("/transfers?type=$(transfer_type)", user_data, get_common_df)
+end
+
+#----------------------------------------------------------------------------------------#
+
+"""
+    show_fees(user_data::UserInfo)
+
+Get current maker & taker fee rates, as well as your 30-day trailing volume.
+
+# Arguments
+- `user_data::UserInfo` : API data
+
+# Example
+```julia-repl
+julia> show_fees(user_data_default)
+1×3 DataFrame
+ Row │ maker_fee_rate  taker_fee_rate  usd_volume 
+     │ String          String          String     
+─────┼────────────────────────────────────────────
+   1 │ 0.0050          0.0050          117.09
+```
+"""
+function show_fees(user_data::UserInfo)
+    auth_data = CoinbaseProAuth("/fees", user_data.api_key, user_data.secret_key, user_data.passphrase, "GET", "")
+
+    df_fees = DataFrame()
+
     try
-        df_fills = get_fills(auth_data)
+        df_fees = get_fees(auth_data)
     catch e
         if isa(e, HTTP.ExceptionRequest.StatusError)
-            @info "404 Not Found - Check if the input data is valid"
+            @info "404 Not Found/403 Forbidden - Check if the input data is valid"
         else
             @info "Could not retrieve data, try again!"
         end
     end
 
-    return df_fills
+    return df_fees
 end
+
+#----------------------------------------------------------------------------------------#
+
+"""
+    show_profiles(user_data::UserInfo)
+
+Get a list of all user profiles/portfolios.
+
+# Arguments
+- `user_data::UserInfo` : API data
+
+# Example
+```julia-repl
+julia> show_profiles(user_data_default)
+6×6 DataFrame
+ Row │ active  created_at                   id                                 is_default  name       ⋯
+     │ Bool    String                       String                             Bool        String     ⋯
+─────┼─────────────────────────────────────────────────────────────────────────────────────────────────
+   1 │   true  2019-06-23T00:19:33.647283Z  dc06c753-2e85-4e2f-b281-3a78bc7b…        true  default    ⋯
+   2 │   true  2021-05-07T21:10:07.037681Z  4617f329-2709-453b-b95d-d14727cb…       false  Julia Bot
+   3 │   true  2021-05-07T22:08:15.362932Z  70c483c4-112e-402d-a498-3dd70155…       false  Julia Bot
+```
+"""
+function show_profiles(user_data::UserInfo)    
+
+    return do_try_catch("/profiles", user_data, get_common_df)
+end
+
+##################### Helper function #####################
+
+function do_try_catch(endpoint::String, user_data::UserInfo, get_common_df)
+
+    auth_data = CoinbaseProAuth(endpoint, user_data.api_key, user_data.secret_key, user_data.passphrase, "GET", "")
+
+    df_data = DataFrame()
+
+    try
+        df_data = get_common_df(auth_data)
+    catch e
+        if isa(e, HTTP.ExceptionRequest.StatusError)
+            @info "404 Not Found/403 Forbidden - Check if the input data is valid"
+        else
+            @info "Could not retrieve data, try again!"
+        end
+    end
+
+    return df_data
+end
+
+
+
+
 
 
 

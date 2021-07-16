@@ -2,7 +2,7 @@ using Documenter
 using CoinbaseProExchange
 
 makedocs(
-    sitename = "CoinbaseProExchange",
+    sitename = "CoinbaseProExchange.jl",
     format = Documenter.HTML(),
     modules = [CoinbaseProExchange]
 )
