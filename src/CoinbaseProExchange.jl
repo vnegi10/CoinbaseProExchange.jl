@@ -25,12 +25,14 @@ using DataFrames, HTTP, JSON, CSV, Dates, Statistics, Query, Base64, Nettle
 
 include("types.jl")
 include("constants.jl")
-
 include("helper.jl")
+
 include("getpublic.jl")
 include("getprivate.jl")
 
-include("ShowDataFunctions.jl")
+include("showpublic.jl")
+include("showprivate.jl")
+
 include("AuthenticationFunctions.jl")
 include("OrderFunctions.jl")
 

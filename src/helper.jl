@@ -21,3 +21,22 @@ function get_data_dict(auth_data::CoinbaseProAuth)
 
     return data_dict
 end
+
+function do_try_catch(endpoint::String, user_data::UserInfo, get_common_df)
+
+    auth_data = CoinbaseProAuth(endpoint, user_data.api_key, user_data.secret_key, user_data.passphrase, "GET", "")
+
+    df_data = DataFrame()
+
+    try
+        df_data = get_common_df(auth_data)
+    catch e
+        if isa(e, HTTP.ExceptionRequest.StatusError)
+            @info "404 Not Found/403 Forbidden - Check if the input data is valid"
+        else
+            @info "Could not retrieve data, try again!"
+        end
+    end
+
+    return df_data
+end
