@@ -72,7 +72,8 @@ julia> show_account_info(user_data, "ETH", "history")
 function show_account_info(
     user_data::UserInfo,
     currency::String,
-    info_type::String)
+    info_type::String
+    )
 
     account_ID = show_all_accounts(user_data, [currency])[!, :id][1]
 
