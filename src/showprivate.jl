@@ -1,4 +1,4 @@
-########## Show private data, requires authentication using Coinbase Pro API key ##########
+########## Show private account data ##########
 
 """
     show_all_accounts(user_data::UserInfo, currencies::Vector{String})
@@ -7,7 +7,8 @@ Fetch summary of all cryptocurrency accounts associated with the given API key.
 
 # Arguments
 - `user_data::UserInfo` : API data
-- `currencies::Vector{String}` : Can be set to ["all"] or a specific set, for example ["LTC", "XTZ"]
+- `currencies::Vector{String}` : Can be set to ["all"] or a specific set, 
+                                 for example ["LTC", "XTZ"]
 
 # Example
 ```julia-repl
@@ -22,9 +23,16 @@ julia> show_all_accounts(user_data, ["LTC", "XTZ"])
 """
 function show_all_accounts(user_data::UserInfo, currencies::Vector{String})
 
-    auth_data = CoinbaseProAuth("/accounts", user_data.api_key, user_data.secret_key, user_data.passphrase, "GET", "")
-    
-    df_account = DataFrame() 
+    auth_data = CoinbaseProAuth(
+        "/accounts",
+        user_data.api_key,
+        user_data.secret_key,
+        user_data.passphrase,
+        "GET",
+        ""
+    )
+
+    df_account = DataFrame()
     try
         df_account = get_all_accounts(auth_data, currencies)
     catch e
@@ -38,7 +46,6 @@ function show_all_accounts(user_data::UserInfo, currencies::Vector{String})
     return df_account
 end
 
-#----------------------------------------------------------------------------------------#
 
 """
     show_account_info(user_data::UserInfo, currency::String, info_type::String)
@@ -62,10 +69,13 @@ julia> show_account_info(user_data, "ETH", "history")
                                                                                                        4 columns omitted
 ```
 """
-function show_account_info(user_data::UserInfo, currency::String, info_type::String)
+function show_account_info(
+    user_data::UserInfo,
+    currency::String,
+    info_type::String)
 
     account_ID = show_all_accounts(user_data, [currency])[!, :id][1]
-    
+
     end_point = ""
 
     if info_type == "info"
@@ -76,7 +86,14 @@ function show_account_info(user_data::UserInfo, currency::String, info_type::Str
         end_point = "/accounts/$(account_ID)/holds"
     end
 
-    auth_data = CoinbaseProAuth(end_point, user_data.api_key, user_data.secret_key, user_data.passphrase, "GET", "")
+    auth_data = CoinbaseProAuth(
+        end_point,
+        user_data.api_key,
+        user_data.secret_key,
+        user_data.passphrase,
+        "GET",
+        ""
+    )
 
     df_account = DataFrame()
     try
@@ -94,7 +111,6 @@ function show_account_info(user_data::UserInfo, currency::String, info_type::Str
     return df_account
 end
 
-#----------------------------------------------------------------------------------------#
 
 """
     show_open_orders(user_data::UserInfo)
@@ -114,7 +130,14 @@ julia> show_open_orders(user_data)
 """
 function show_open_orders(user_data::UserInfo)
 
-    auth_data = CoinbaseProAuth("/orders", user_data.api_key, user_data.secret_key, user_data.passphrase, "GET", "")
+    auth_data = CoinbaseProAuth(
+        "/orders",
+        user_data.api_key,
+        user_data.secret_key,
+        user_data.passphrase,
+        "GET",
+        ""
+    )
 
     df_orders = DataFrame()
     try
@@ -130,7 +153,6 @@ function show_open_orders(user_data::UserInfo)
     return df_orders
 end
 
-#----------------------------------------------------------------------------------------#
 
 """
     show_single_order(order_ID::String, user_data::UserInfo)
@@ -154,7 +176,15 @@ julia> show_single_order("14c0db51-ca17-4a8d-9d2c-aa633e703358", user_data)
 ```
 """
 function show_single_order(order_ID::String, user_data::UserInfo)
-    auth_data = CoinbaseProAuth("/orders/$(order_ID)", user_data.api_key, user_data.secret_key, user_data.passphrase, "GET", "")
+
+    auth_data = CoinbaseProAuth(
+        "/orders/$(order_ID)",
+        user_data.api_key,
+        user_data.secret_key,
+        user_data.passphrase,
+        "GET",
+        ""
+    )
 
     df_orders = DataFrame()
     try
@@ -170,7 +200,6 @@ function show_single_order(order_ID::String, user_data::UserInfo)
     return df_orders
 end
 
-#----------------------------------------------------------------------------------------#
 
 """
     show_exchange_limits(user_data::UserInfo, currency::String)
@@ -196,7 +225,15 @@ julia> show_exchange_limits(user_data, "ETH")
 ```
 """
 function show_exchange_limits(user_data::UserInfo, currency::String)
-    auth_data = CoinbaseProAuth("/users/self/exchange-limits", user_data.api_key, user_data.secret_key, user_data.passphrase, "GET", "")
+
+    auth_data = CoinbaseProAuth(
+        "/users/self/exchange-limits",
+        user_data.api_key,
+        user_data.secret_key,
+        user_data.passphrase,
+        "GET",
+        ""
+    )
 
     df_limits = DataFrame()
     try
@@ -212,7 +249,6 @@ function show_exchange_limits(user_data::UserInfo, currency::String)
     return df_limits
 end
 
-#----------------------------------------------------------------------------------------#
 
 """
     show_fills(user_data::UserInfo, pair::String)
@@ -232,16 +268,12 @@ julia> show_fills(user_data, "ETH-EUR")
 ─────┼──────────────────────────────────────────────────────────────────────────────────────────────────────
    1 │ 2021-07-04T21:54:09.902Z  0.0746268391200000  T          d275ae2b-4f34-4ce9-98a7-1147bccf…  2003.90 ⋯
    2 │ 2021-07-04T15:43:54.115Z  0.0733968750000000  T          7a019bf8-bee8-4001-bb34-e3d6f3e6…  1957.25
-   3 │ 2021-07-04T15:42:35.808Z  0.0597014279730000  T          2a8814f1-76d3-4fa2-bb0a-6f25e050…  1956.42
-   4 │ 2021-07-04T15:28:06.005Z  0.0599999776075000  T          9971744a-d308-4481-950d-e2ada197…  1953.35
 ```
 """
 function show_fills(user_data::UserInfo, pair::String)
-        
     return do_try_catch("/fills?product_id=$(pair)", user_data, get_common_df)
 end
 
-#----------------------------------------------------------------------------------------#
 
 """
     show_transfers(user_data::UserInfo, deposit_type::String="deposit")
@@ -263,12 +295,15 @@ julia> show_transfers(user_data, "internal_deposit")
    2 │ 6defb94d-80e3-45b4-a6bf-0420cc5f…  10.0000000000000000   2021-07-16 11:07:48.003446+00  EUR
 ```
 """
-function show_transfers(user_data::UserInfo, transfer_type::String="deposit")
-    
-    return do_try_catch("/transfers?type=$(transfer_type)", user_data, get_common_df)
+function show_transfers(user_data::UserInfo, transfer_type::String = "deposit")
+
+    return do_try_catch(
+        "/transfers?type=$(transfer_type)",
+        user_data,
+        get_common_df
+    )
 end
 
-#----------------------------------------------------------------------------------------#
 
 """
     show_fees(user_data::UserInfo)
@@ -289,7 +324,15 @@ julia> show_fees(user_data_default)
 ```
 """
 function show_fees(user_data::UserInfo)
-    auth_data = CoinbaseProAuth("/fees", user_data.api_key, user_data.secret_key, user_data.passphrase, "GET", "")
+
+    auth_data = CoinbaseProAuth(
+        "/fees",
+        user_data.api_key,
+        user_data.secret_key,
+        user_data.passphrase,
+        "GET",
+        ""
+    )
 
     df_fees = DataFrame()
 
@@ -306,7 +349,6 @@ function show_fees(user_data::UserInfo)
     return df_fees
 end
 
-#----------------------------------------------------------------------------------------#
 
 """
     show_profiles(user_data::UserInfo)
@@ -325,10 +367,8 @@ julia> show_profiles(user_data_default)
 ─────┼─────────────────────────────────────────────────────────────────────────────────────────────────
    1 │   true  2019-06-23T00:19:33.647283Z  dc06c753-2e85-4e2f-b281-3a78bc7b…        true  default    ⋯
    2 │   true  2021-05-07T21:10:07.037681Z  4617f329-2709-453b-b95d-d14727cb…       false  Julia Bot
-   3 │   true  2021-05-07T22:08:15.362932Z  70c483c4-112e-402d-a498-3dd70155…       false  Julia Bot
 ```
 """
 function show_profiles(user_data::UserInfo)    
-
     return do_try_catch("/profiles", user_data, get_common_df)
 end

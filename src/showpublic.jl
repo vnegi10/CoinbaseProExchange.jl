@@ -14,11 +14,11 @@ julia> show_server_time("iso")
 "2021-07-06T22:09:17.231Z"
 ```
 """
-function show_server_time(time_type::String="iso")
+function show_server_time(time_type::String = "iso")
 
     server_time = Dict()
-    
-    try 
+
+    try
         server_time = get_server_time()
     catch
         @info "Unable to retrieve API server time"
@@ -27,7 +27,6 @@ function show_server_time(time_type::String="iso")
     return server_time[time_type]
 end
 
-#----------------------------------------------------------------------------------------#
 
 """
     show_historical_data(pair::String, interval::Int64)
@@ -48,18 +47,14 @@ julia> show_historical_data("ETH-EUR", 3600)
 ─────┼──────────────────────────────────────────────────────────────────
    1 │ 2021-06-24T11:00:00  1619.45  1650.91  1619.45  1648.84  407.623
    2 │ 2021-06-24T12:00:00  1644.02  1665.64  1648.05  1655.5   446.389
-   3 │ 2021-06-24T13:00:00  1640.57  1658.99  1656.58  1651.13  295.881
-   4 │ 2021-06-24T14:00:00  1639.84  1652.13  1652.13  1649.94  240.949
-   5 │ 2021-06-24T15:00:00  1646.88  1692.83  1650.94  1666.79  1250.91
-   6 │ 2021-06-24T16:00:00  1657.07  1694.52  1665.94  1693.9   659.553
 ```
 """
-function show_historical_data(pair::String, interval::Int64=300)
+function show_historical_data(pair::String, interval::Int64 = 300)
 
     df_candles = DataFrame()
-    
+
     try
-        df_candles = get_historical_data(pair::String, interval::Int64)        
+        df_candles = get_historical_data(pair::String, interval::Int64)
     catch e
         if isa(e, HTTP.ExceptionRequest.StatusError)
             @info "404 Not Found - Check if the pair ID is valid"
@@ -73,7 +68,6 @@ function show_historical_data(pair::String, interval::Int64=300)
     return df_candles
 end
 
-#----------------------------------------------------------------------------------------#
 
 """
     show_all_products(currency::String)
@@ -89,15 +83,10 @@ julia> show_all_products("EUR")
 40-element Vector{String}:
  "ETC-EUR"
  "SNX-EUR"
- "NMR-EUR"
- "SOL-EUR"
- "SKL-EUR"
- "NU-EUR"
- "XTZ-EUR"
- "UMA-EUR"
 ```
 """
-function show_all_products(currency::String="USD")
+function show_all_products(currency::String = "USD")
+
     products = String[]
     try
         products = get_all_products(currency)
@@ -113,10 +102,9 @@ function show_all_products(currency::String="USD")
         @info "No products exist for the given currency, try something else!"
     else
         return products
-    end    
+    end
 end
 
-#----------------------------------------------------------------------------------------#
 
 """
     show_latest_trades(pair::String)
@@ -135,18 +123,14 @@ julia> show_latest_trades("ETH-EUR")
 ──────┼─────────────────────────────────────────────────────────────────
     1 │ 2021-07-06T22:23:54.963Z  1949.03  sell    0.101       22822595
     2 │ 2021-07-06T22:23:53.612Z  1948.85  sell    0.0187214   22822594
-    3 │ 2021-07-06T22:23:42.616Z  1948.83  sell    0.0018276   22822593
-    4 │ 2021-07-06T22:23:32.605Z  1949.17  sell    0.00285893  22822592
-    5 │ 2021-07-06T22:23:32.605Z  1949.07  sell    0.006588    22822591
-    6 │ 2021-07-06T22:23:29.299Z  1948.8   sell    0.0540009   22822590
 ```
 """
 function show_latest_trades(pair::String)
 
     df_trades = DataFrame()
-      
+
     try
-        df_trades = get_latest_trades(pair)      
+        df_trades = get_latest_trades(pair)
     catch e
         if isa(e, HTTP.ExceptionRequest.StatusError)
             @info "404 Not Found - Check if the pair ID is valid"
@@ -158,7 +142,6 @@ function show_latest_trades(pair::String)
     return df_trades
 end
 
-#----------------------------------------------------------------------------------------#
 
 """
     show_product_data(pair::String, endpoint::String)
@@ -180,9 +163,9 @@ julia> show_product_data("BTC-EUR", "24hr stats")
    1 │ 29620.29  28740.89  28362.27  28642.14  1058.30490447  57346.67861744
 ```
 """
-function show_product_data(pair::String, endpoint::String="24hr stats")
+function show_product_data(pair::String, endpoint::String = "24hr stats")
 
-    df_product = DataFrame() 
+    df_product = DataFrame()
 
     try
         df_product = get_product_data(pair, endpoint)
