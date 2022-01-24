@@ -33,7 +33,7 @@ include("getprivate.jl")
 include("showpublic.jl")
 include("showprivate.jl")
 
-include("AuthenticationFunctions.jl")
-include("OrderFunctions.jl")
+include("authentication.jl")
+include("order.jl")
 
 end # module

@@ -1,30 +1,38 @@
-function create_new_order(auth_data::CoinbaseProAuth)	
-	
-	url = URL * auth_data.end_point
-	
-	headers = generate_auth_headers(auth_data)
-	push!(headers, "Content-Type" => "application/json")
-	body = auth_data.body
-	
-	# Use POST request to place an order	
-	order_response = HTTP.request(auth_data.method, url, headers, body; verbose = 0, retries = 2)		
-	order_text = String(order_response.body)
-	order_dict = JSON.parse(order_text)	
-	
-	return order_dict
-end	
+function create_new_order(auth_data::CoinbaseProAuth)
 
-#----------------------------------------------------------------------------------------#
+    url = URL * auth_data.end_point
+
+    headers = generate_auth_headers(auth_data)
+    push!(headers, "Content-Type" => "application/json")
+    body = auth_data.body
+
+    # Use POST request to place an order	
+    order_response = HTTP.request(
+        auth_data.method,
+        url,
+        headers,
+        body;
+        verbose = 0,
+        retries = 2
+    )
+    order_text = String(order_response.body)
+    order_dict = JSON.parse(order_text)
+
+    return order_dict
+end
+
 
 """
-    place_market_order(side::String, pair::String, amount::IntOrFloat, amount_type::String, user_data::UserInfo)
+    place_market_order(side::String, pair::String, amount::IntOrFloat, amount_type::String, 
+                       user_data::UserInfo)
 
 Place a market order using the information provided.
 
 # Arguments
 - `side::String` : "buy" or "sell"
 - `pair::String` : Specify currency pair, for example "ETH-EUR"
-- `amount::IntOrFloat` : Specify amount in base currency (ETH, BTC etc.) or quote currency (EUR, USD etc.)
+- `amount::IntOrFloat` : Specify amount in base currency (ETH, BTC etc.) or 
+                         quote currency (EUR, USD etc.)
 - `amount_type::String` : Select either "base" or "quote" based on the amount entered
 - `user_data::UserInfo` : API data
 
@@ -49,17 +57,31 @@ Dict{String, Any} with 14 entries:
   "type"            => "market"
 ```
 """
-function place_market_order(side::String, pair::String, amount::IntOrFloat, amount_type::String, user_data::UserInfo)
-	
+function place_market_order(
+    side::String,
+    pair::String,
+    amount::IntOrFloat,
+    amount_type::String,
+    user_data::UserInfo
+    )
+
     @assert amount_type in ["base", "quote"]
 
-    order_auth = generate_order_auth(side, pair, amount, amount_type, user_data.api_key, user_data.secret_key, user_data.passphrase)
+    order_auth = generate_order_auth(
+        side,
+        pair,
+        amount,
+        amount_type,
+        user_data.api_key,
+        user_data.secret_key,
+        user_data.passphrase
+    )
 
     order_dict = Dict()
 
     try
         order_dict = create_new_order(order_auth)
-        @info "Order placed"        
+        @info "Order placed"
     catch e
         if isa(e, HTTP.ExceptionRequest.StatusError)
             @info "404 Not Found - Check if the input is valid"
@@ -68,13 +90,13 @@ function place_market_order(side::String, pair::String, amount::IntOrFloat, amou
         end
     end
 
-	return order_dict	
-end	
+    return order_dict
+end
 
-#----------------------------------------------------------------------------------------#
 
 """
-    place_limit_order(side::String, pair::String, amount::IntOrFloat, price::IntOrFloat, user_data::UserInfo)
+    place_limit_order(side::String, pair::String, amount::IntOrFloat, price::IntOrFloat, 
+                      user_data::UserInfo)
 
 Place a limit order using the information provided.
 
@@ -106,15 +128,29 @@ Dict{String, Any} with 15 entries:
   "type"           => "limit"
 ```
 """
-function place_limit_order(side::String, pair::String, amount::IntOrFloat, price::IntOrFloat, user_data::UserInfo)
-	
-	order_auth = generate_order_auth(side, pair, amount, price, user_data.api_key, user_data.secret_key, user_data.passphrase)
+function place_limit_order(
+    side::String,
+    pair::String,
+    amount::IntOrFloat,
+    price::IntOrFloat,
+    user_data::UserInfo
+    )
+    
+    order_auth = generate_order_auth(
+        side,
+        pair,
+        amount,
+        price,
+        user_data.api_key,
+        user_data.secret_key,
+        user_data.passphrase
+    )
 
     order_dict = Dict()
 
     try
         order_dict = create_new_order(order_auth)
-        @info "Order placed"        
+        @info "Order placed"
     catch e
         if isa(e, HTTP.ExceptionRequest.StatusError)
             @info "404 Not Found - Check if the input is valid"
@@ -123,10 +159,9 @@ function place_limit_order(side::String, pair::String, amount::IntOrFloat, price
         end
     end
 
-	return order_dict	
+    return order_dict
 end
 
-#----------------------------------------------------------------------------------------#
 
 """
     cancel_order(order_id::String, user_data::UserInfo)
@@ -147,30 +182,43 @@ julia>cancel_order("5591e17e-5f79-41f0-93d5-b455ec552ecc", user_data)
 function cancel_order(order_id::String, user_data::UserInfo)
 
     # Use DELETE request to delete the specified order
-    auth_data = CoinbaseProAuth("/orders/$(order_id)", user_data.api_key, user_data.secret_key, user_data.passphrase, "DELETE", "")
+    auth_data = CoinbaseProAuth(
+        "/orders/$(order_id)",
+        user_data.api_key,
+        user_data.secret_key,
+        user_data.passphrase,
+        "DELETE",
+        ""
+    )
 
     url = URL * auth_data.end_point
-	
-	headers = generate_auth_headers(auth_data)
-	body = auth_data.body
+
+    headers = generate_auth_headers(auth_data)
+    body = auth_data.body
     order_dict = Dict()
 
     try
-        order_response = HTTP.request(auth_data.method, url, headers, body; verbose = 0, retries = 2)		
-	    order_text = String(order_response.body)
-	    order_dict = JSON.parse(order_text)	        
+        order_response = HTTP.request(
+            auth_data.method,
+            url,
+            headers,
+            body;
+            verbose = 0,
+            retries = 2
+        )
+        order_text = String(order_response.body)
+        order_dict = JSON.parse(order_text)
     catch e
         if isa(e, HTTP.ExceptionRequest.StatusError)
             @info "404 Not Found - Check if the input is valid"
         else
             @info "Could not delete order, try again!"
         end
-    end	
+    end
 
     return order_dict
 end
 
-#----------------------------------------------------------------------------------------#
 
 """
     cancel_all_orders(user_data::UserInfo)
@@ -187,26 +235,39 @@ julia>cancel_all_orders(user_data)
 function cancel_all_orders(user_data::UserInfo)
 
     # Use DELETE request to delete all open orders
-    auth_data = CoinbaseProAuth("/orders", user_data.api_key, user_data.secret_key, user_data.passphrase, "DELETE", "")
+    auth_data = CoinbaseProAuth(
+        "/orders",
+        user_data.api_key,
+        user_data.secret_key,
+        user_data.passphrase,
+        "DELETE",
+        ""
+    )
 
     url = URL * auth_data.end_point
-	
-	headers = generate_auth_headers(auth_data)
-	body = auth_data.body
+
+    headers = generate_auth_headers(auth_data)
+    body = auth_data.body
     order_dict = Dict()
 
     try
-        order_response = HTTP.request(auth_data.method, url, headers, body; verbose = 0, retries = 2)		
-	    order_text = String(order_response.body)
-	    order_dict = JSON.parse(order_text)	        
+        order_response = HTTP.request(
+            auth_data.method,
+            url,
+            headers,
+            body;
+            verbose = 0,
+            retries = 2
+        )
+        order_text = String(order_response.body)
+        order_dict = JSON.parse(order_text)
     catch e
         if isa(e, HTTP.ExceptionRequest.StatusError)
             @info "404 Not Found - Check if the input is valid"
         else
             @info "Could not delete order, try again!"
         end
-    end	
+    end
 
     return order_dict
 end
-
