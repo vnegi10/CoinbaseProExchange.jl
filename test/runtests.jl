@@ -19,7 +19,7 @@ df_trades = show_latest_trades("BTC-EUR")
 df_24hr_stats = show_product_data("BTC-EUR", "24hr stats")
 @test ~isempty(df_24hr_stats)
 
-df_order_book2 = show_product_data("BTC-EUR", "order book 2")
+df_order_book2 = show_product_data("BTC-EUR", "order book 1")
 @test ~isempty(df_order_book2)
 
 end
@@ -27,7 +27,7 @@ end
 #= Test cases for accessing private data, which needs user API information. Hence, this set 
    is run only locally. =#
 
-#= @testset "Check if private data is accessible" begin
+@testset "Check if private data is accessible" begin
 
 input_params = JSON.parsefile("/home/vikas/Documents/Input_JSON/VNEG_user_data_default_view.json")
 user_data = UserInfo(input_params["api_key"], input_params["api_secret"], input_params["api_passphrase"])
@@ -60,7 +60,4 @@ df_fees = show_fees(user_data::UserInfo)
 df_profiles = show_profiles(user_data::UserInfo)
 @test ~isempty(df_profiles)
 
-end =#
-
-
-
+end 
