@@ -61,7 +61,7 @@ function get_all_products(currency::String)
         filter(p -> (p["quote_currency"] == currency), product_dict)
 
     products = String[]
-    for i in 1:length(filter_product_dict)
+    for i in eachindex(filter_product_dict)
         push!(products, filter_product_dict[i]["id"])
     end
 
