@@ -1,5 +1,11 @@
 using Test, DataFrames, JSON, CoinbaseProExchange
 
+#= Developer can select tests based on input arguments. For example, to run only the
+"testpublic.jl" test set, execute the following in the REPL:
+
+julia> Pkg.test("CoinbaseProExchange"; test_args = ["testpublic.jl"])
+=#
+
 errors = false
 all_tests = false
 
