@@ -24,7 +24,14 @@ end
 
 function do_try_catch(endpoint::String, user_data::UserInfo, get_common_df)
 
-    auth_data = CoinbaseProAuth(endpoint, user_data.api_key, user_data.secret_key, user_data.passphrase, "GET", "")
+    auth_data = CoinbaseProAuth(
+        endpoint,
+        user_data.api_key,
+        user_data.secret_key,
+        user_data.passphrase,
+        "GET",
+        ""
+    )
 
     df_data = DataFrame()
 
