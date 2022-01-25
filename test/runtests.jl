@@ -1,63 +1,45 @@
 using Test, DataFrames, JSON, CoinbaseProExchange
 
-# Test cases for accessing market data
+errors = false
+all_tests = false
 
-@testset "Check if market data is accessible" begin
+# Run all tests when no arguments or "all" is specified
+if isempty(ARGS) || "all" in ARGS
+    all_tests = true
+end
 
-time = show_server_time("epoch")
-@test typeof(time) == Float64
+# Execute test in a try-catch block for each file
+function execute_test(file::String, ARGS; all_tests::Bool, errors::Bool)
 
-df_history = show_historical_data("BTC-EUR", 3600)
-@test ~isempty(df_history)
+   if all_tests || file in ARGS
+       try
+           include(file)
+           println("\t\033[1m\033[32mPASSED\033[0m: $(file)")
+       catch e
+           println("\t\033[1m\033[31mFAILED\033[0m: $(file)")
+           errors = true
+           showerror(stdout, e, backtrace())
+           println()
+       end
+   end
 
-all_products = show_all_products("EUR")
-@test ~isempty(all_products)
-
-df_trades = show_latest_trades("BTC-EUR")
-@test ~isempty(df_trades)
-
-df_24hr_stats = show_product_data("BTC-EUR", "24hr stats")
-@test ~isempty(df_24hr_stats)
-
-df_order_book2 = show_product_data("BTC-EUR", "order book 1")
-@test ~isempty(df_order_book2)
+   if errors
+       @warn "Some tests have failed! Check the results summary above."
+   end
 
 end
 
-#= Test cases for accessing private data, which needs user API information. Hence, this set 
-   is run only locally. =#
+################# All test groups #################
 
-@testset "Check if private data is accessible" begin
+test_files = ["testpublic.jl", "testprivate.jl"]
 
-input_params = JSON.parsefile("/home/vikas/Documents/Input_JSON/VNEG_user_data_default_view.json")
-user_data = UserInfo(input_params["api_key"], input_params["api_secret"], input_params["api_passphrase"])
+###################################################
 
-df_all_accounts = show_all_accounts(user_data, ["ETH", "BTC", "LTC"])
-@test ~isempty(df_all_accounts)
 
-df_account_info = show_account_info(user_data, "ETH", "info")
-@test ~isempty(df_account_info)
+################# Execute tests ###################
 
-# TODO
-# df_account_history = show_account_info(user_data, "ETH", "history")
-# @test isa(df_account_history, DataFrame)
+@time for file in test_files
+    execute_test(file, ARGS, all_tests = all_tests, errors = errors)    
+end
 
-df_limits = show_exchange_limits(user_data, "ETH")
-@test ~isempty(df_limits)
-
-df_fills = show_fills(user_data, "ETH-EUR")
-@test ~isempty(df_fills)
-
-df_deposit = show_transfers(user_data, "deposit")
-@test ~isempty(df_deposit)
-
-df_withdraw = show_transfers(user_data, "withdraw")
-@test ~isempty(df_withdraw)
-
-df_fees = show_fees(user_data::UserInfo)
-@test ~isempty(df_fees)
-
-df_profiles = show_profiles(user_data::UserInfo)
-@test ~isempty(df_profiles)
-
-end 
+###################################################
