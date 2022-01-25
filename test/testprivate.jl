@@ -1,7 +1,7 @@
 #= Test cases for accessing private data, which needs user API information. Hence, this set 
    is run only locally. =#
 
-@testset "Check if private account data is accessible" begin
+@testset verbose=true "Check if private account data is accessible" begin
 
     input_params = JSON.parsefile("/home/vikas/Documents/Input_JSON/VNEG_user_data_default_view.json")
     user_data = UserInfo(input_params["api_key"], input_params["api_secret"], input_params["api_passphrase"])
@@ -61,7 +61,7 @@
         deposits = ["deposit", "internal_deposit", "withdraw", "internal_withdraw"]
 
         for deposit in deposits
-            ~isempty(show_transfers(user_data, deposit))
+            @test ~isempty(show_transfers(user_data, deposit))
         end
 
     end
