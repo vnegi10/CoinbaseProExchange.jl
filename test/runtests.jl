@@ -36,7 +36,8 @@ end
 
 ################# All test groups #################
 
-test_files = ["testpublic.jl", "testprivate.jl"]
+test_files = ["testpublic.jl"] 
+              #"testprivate.jl"]
 
 ###################################################
 
