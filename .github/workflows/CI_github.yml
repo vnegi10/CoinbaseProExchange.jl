@@ -1,14 +1,11 @@
-name: CI
+name: CI_github
 
 on:
   pull_request:
-    types: [opened, edited]    
-    branches:
-      - main
+    branches: ["main"]
   push:
-    branches:
-      - main
-    tags: '*'
+    branches: ["main"]
+          
   workflow_dispatch:
 
 jobs:
