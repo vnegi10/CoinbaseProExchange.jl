@@ -1,6 +1,7 @@
 module CoinbaseProExchange
 
 export plot_historical_price,
+    plot_historical_vol,
     show_historical_data,
     show_server_time,
     show_all_products,
