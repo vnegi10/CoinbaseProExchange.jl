@@ -117,16 +117,3 @@ Dict{String, Any} with 14 entries:
 ```
 
 **Check docs for more examples:** [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://vnegi10.github.io/CoinbaseProExchange.jl/stable)
-
-
-
-
-
-
-
-
-
-
-
-
-
