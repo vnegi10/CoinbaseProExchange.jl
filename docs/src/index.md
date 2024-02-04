@@ -19,6 +19,10 @@ show_all_products(currency::String="USD")
 show_latest_trades(pair::String)
 
 show_product_data(pair::String, endpoint::String="24hr stats")
+
+plot_historical_price(pair::String, interval::Int64 = 300)
+
+plot_historical_vol(pair::String, interval::Int64 = 300)
 ```
 
 ## Private endpoints (Coinbase Pro account + API keys are needed)
@@ -54,11 +58,3 @@ cancel_order(order_id::String, user_data::UserInfo)
 
 cancel_all_orders(user_data::UserInfo)
 ```
-
-
-
-
-
-
-
-

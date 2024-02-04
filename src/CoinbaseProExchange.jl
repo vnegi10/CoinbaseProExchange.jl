@@ -1,6 +1,8 @@
 module CoinbaseProExchange
 
-export show_historical_data,
+export plot_historical_price,
+    plot_historical_vol,
+    show_historical_data,
     show_server_time,
     show_all_products,
     show_latest_trades,
@@ -21,7 +23,10 @@ export show_historical_data,
     UserInfo,
     IntOrFloat
 
-using DataFrames, HTTP, JSON, CSV, Dates, Statistics, Query, Base64, Nettle
+using DataFrames, HTTP, JSON
+using Dates, Statistics, Query
+using Base64, Nettle
+using UnicodePlots
 
 include("types.jl")
 include("constants.jl")
@@ -32,6 +37,8 @@ include("getprivate.jl")
 
 include("showpublic.jl")
 include("showprivate.jl")
+
+include("plotpublic.jl")
 
 include("authentication.jl")
 include("order.jl")

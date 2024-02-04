@@ -2,8 +2,11 @@
 
 @testset verbose = true "Check if public market data is accessible" begin
 
-    pairs = ["ETH-EUR", "LTC-EUR"]
-    intervals = [60, 3600]
+    # Common input parameters for the tests
+    pairs_1 = ["ETH-EUR", "LTC-EUR"]
+    pairs_2 = ["BTC-USD", "LINK-EUR"]
+    intervals_1 = [60, 3600]
+    intervals_2 = [21600, 86400]
     fiat_currencies = ["USD", "EUR"]
     endpoints = [
         "24hr stats",
@@ -21,13 +24,14 @@
         end
     end
 
-    @testset "show_historical_data" begin
+    # Already covered when plotting calls are made during plot tests
+    #=@testset "show_historical_data" begin
         for pair in pairs
             for interval in intervals
                 @test ~isempty(show_historical_data(pair, interval))
             end
         end
-    end
+    end=#
 
     @testset "show_all_products" begin
         for currency in fiat_currencies
@@ -36,7 +40,7 @@
     end
 
     @testset "show_latest_trades" begin
-        for pair in pairs
+        for pair in pairs_1
             @test ~isempty(show_latest_trades(pair))
         end
     end
@@ -50,4 +54,23 @@
             end
         end
     end
+
+    @testset "plot_historical_price" begin
+        for pair in pairs_1
+            for interval in intervals_1
+                plt = plot_historical_price(pair, interval)
+                @test sizeof(plt) > 0
+            end
+        end
+    end
+
+    @testset "plot_historical_vol" begin
+        for pair in pairs_2
+            for interval in intervals_2
+                plt = plot_historical_vol(pair, interval)
+                @test sizeof(plt) > 0
+            end
+        end
+    end
+
 end
