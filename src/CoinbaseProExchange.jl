@@ -21,7 +21,7 @@ export show_historical_data,
     UserInfo,
     IntOrFloat
 
-using DataFrames, HTTP, JSON, CSV, Dates, Statistics, Query, Base64, Nettle
+using DataFrames, HTTP, JSON, Dates, Statistics, Query, Base64, Nettle
 
 include("types.jl")
 include("constants.jl")
