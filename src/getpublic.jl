@@ -104,19 +104,17 @@ end
 
 function get_url(pair::String, endpoint::String)
 
-    url = ""
-    if endpoint == "24hr stats"
-        url = URL * "/products/$(pair)/stats"
-    elseif endpoint == "product info"
-        url = URL * "/products/$(pair)"
-    elseif endpoint == "product ticker"
-        url = URL * "/products/$(pair)/ticker"
-    elseif occursin("order book", endpoint)
-        level = parse(Int64, endpoint[end])
-        url = URL * "/products/$(pair)/book?level=$(level)"
+    url_dict = Dict(
+               "24hr stats" => URL * "/products/$(pair)/stats",
+               "product info" => URL * "/products/$(pair)",
+               "product ticker" => URL * "/products/$(pair)/ticker",
+               )
+    
+    if occursin("order book", endpoint)
+        return URL * "/products/$(pair)/book?level=$(parse(Int64, endpoint[end]))"
+    else
+        return url_dict[endpoint]
     end
-
-    return url
 end
 
 function get_product_data(pair::String, endpoint::String)
