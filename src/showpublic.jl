@@ -52,6 +52,7 @@ julia> show_historical_data("ETH-EUR", 3600)
 function show_historical_data(pair::String, interval::Int64 = 300)
 
     df_candles = DataFrame()
+    closest_match = interval
 
     try
         df_candles = get_historical_data(pair, interval)
@@ -68,7 +69,7 @@ function show_historical_data(pair::String, interval::Int64 = 300)
         end
     end
 
-    return df_candles
+    return df_candles, closest_match
 end
 
 
