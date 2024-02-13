@@ -21,7 +21,7 @@ function show_server_time(time_type::String = "iso")
     try
         server_time = get_server_time()
     catch
-        @info "Unable to retrieve API server time"
+        error("Unable to retrieve API server time")
     end
 
     return server_time[time_type]
@@ -103,7 +103,7 @@ function show_all_products(currency::String = "USD")
     end
 
     if isempty(products)
-        @info "No products exist for the given currency, try something else!"
+        error("No products exist for the given currency, try something else!")
     else
         return products
     end
