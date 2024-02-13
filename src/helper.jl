@@ -47,3 +47,11 @@ function do_try_catch(endpoint::String, user_data::UserInfo, get_common_df)
 
     return df_data
 end
+
+function closest_interval(interval::Int64)
+
+    _, closest_index = (GRANULARITY .- interval) .|> abs |> findmin
+
+    return GRANULARITY[closest_index]
+
+end

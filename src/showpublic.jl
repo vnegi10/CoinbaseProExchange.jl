@@ -54,14 +54,17 @@ function show_historical_data(pair::String, interval::Int64 = 300)
     df_candles = DataFrame()
 
     try
-        df_candles = get_historical_data(pair::String, interval::Int64)
+        df_candles = get_historical_data(pair, interval)
     catch e
         if isa(e, HTTP.ExceptionRequest.StatusError)
-            @info "404 Not Found - Check if the pair ID is valid"
+            error("404 Not Found - Check if the pair ID is valid")
         elseif isa(e, AssertionError)
-            @info "Granularity is NOK, choose only from {60, 300, 900, 3600, 21600, 86400}."
+            @warn("Granularity is NOK, choose only one from {60, 300, 900, 3600, 21600, 86400} seconds.")
+            closest_match = closest_interval(interval)
+            @info("Showing result for closest match $(closest_match)")
+            df_candles = get_historical_data(pair, closest_match)
         else
-            @info "Could not retrieve historical data, try again!"
+            error("Could not retrieve historical data, try again!")
         end
     end
 
