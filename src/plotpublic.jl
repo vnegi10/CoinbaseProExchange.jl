@@ -35,14 +35,14 @@ julia> plot_historical_price("ETH-EUR", 86400)
 """
 function plot_historical_price(pair::String, interval::Int64 = 300)
 
-    df_candles = show_historical_data(pair, interval)
+    df_candles, closest_match = show_historical_data(pair, interval)
 
     currency = split(pair, "-")[2]
 
     plt = lineplot(
         df_candles[!, :time],
         df_candles[!, :close],
-        title  = "Closing price for $(pair) in intervals of $(interval) seconds",
+        title  = "Closing price for $(pair) in intervals of $(closest_match) seconds",
         xlabel = "Time",
         ylabel = "Closing price [$(currency)]",
         xticks = true,
@@ -96,14 +96,14 @@ julia> plot_historical_vol("ETH-EUR", 21600)
 """
 function plot_historical_vol(pair::String, interval::Int64 = 300)
 
-    df_candles = show_historical_data(pair, interval)
+    df_candles, closest_match = show_historical_data(pair, interval)
 
     coin = split(pair, "-")[1]
 
     plt = lineplot(
         df_candles[!, :time],
         df_candles[!, :volume],
-        title  = "Volume for $(pair) in intervals of $(interval) seconds",
+        title  = "Volume for $(pair) in intervals of $(closest_match) seconds",
         xlabel = "Time",
         ylabel = "Number of coins [$(coin)]",
         xticks = true,

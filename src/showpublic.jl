@@ -21,7 +21,7 @@ function show_server_time(time_type::String = "iso")
     try
         server_time = get_server_time()
     catch
-        @info "Unable to retrieve API server time"
+        error("Unable to retrieve API server time")
     end
 
     return server_time[time_type]
@@ -52,20 +52,24 @@ julia> show_historical_data("ETH-EUR", 3600)
 function show_historical_data(pair::String, interval::Int64 = 300)
 
     df_candles = DataFrame()
+    closest_match = interval
 
     try
-        df_candles = get_historical_data(pair::String, interval::Int64)
+        df_candles = get_historical_data(pair, interval)
     catch e
         if isa(e, HTTP.ExceptionRequest.StatusError)
-            @info "404 Not Found - Check if the pair ID is valid"
+            error("404 Not Found - Check if the pair ID is valid")
         elseif isa(e, AssertionError)
-            @info "Granularity is NOK, choose only from {60, 300, 900, 3600, 21600, 86400}."
+            @warn("Granularity is NOK, choose only one from {60, 300, 900, 3600, 21600, 86400} seconds.")
+            closest_match = closest_interval(interval)
+            @info("Showing result for closest match $(closest_match)")
+            df_candles = get_historical_data(pair, closest_match)
         else
-            @info "Could not retrieve historical data, try again!"
+            error("Could not retrieve historical data, try again!")
         end
     end
 
-    return df_candles
+    return df_candles, closest_match
 end
 
 
@@ -99,7 +103,7 @@ function show_all_products(currency::String = "USD")
     end
 
     if isempty(products)
-        @info "No products exist for the given currency, try something else!"
+        error("No products exist for the given currency, try something else!")
     else
         return products
     end
